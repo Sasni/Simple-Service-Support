@@ -33,8 +33,17 @@ simple_service_support_install();    // FUNKCJA INSTALUJĄCA TABELE W BAZIE
  */
 
 if (!class_exists('WP_List_Table')) {
-    require_once(ABSPATH . 'wp-admin/includes/class-wp-list-table.php');
+
+	$url = includes_url();
+	echo $url;
+
+    /*require_once(ABSPATH . 'wp-admin/includes/class-wp-list-table.php');*/
+    require_once( $url.'class-wp-list-table.php');
+
 }
+
+
+
 
 /**
  * simple_service_support_List_Table class that will display our custom table records in nice table
@@ -349,7 +358,7 @@ add_action('admin_menu', 'simple_service_support_admin_menu');  // wywołuję fu
 
 function simple_service_support_admin_init() {
        /* Register our stylesheet. ONLY FOR PLUGIN PAGES*/
-       wp_register_style( 'bootstarp', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css');
+       wp_register_style( 'bootstarp',  WP_PLUGIN_URL. '/Simple-Service-Support/css/bootstrap.min.css');
    }
  
 function simple_service_support_admin_menu()
@@ -365,7 +374,7 @@ function simple_service_support_admin_menu()
        add_action( 'admin_print_styles-' . $page2, 'simple_service_support_admin_styles' );
 }
 function simple_service_support_admin_styles() {
-    wp_enqueue_style('bootstrap' , 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css');
+    wp_enqueue_style('bootstrap' , WP_PLUGIN_URL. '/Simple-Service-Support/css/bootstrap.min.css');
     wp_enqueue_style('thickbox');
   /*wp_enqueue_style('my_css', WP_PLUGIN_URL. '/Simple-Service-Support/css/style.css');*/  //   mój własny css
     wp_enqueue_style('jquery-ui-css', 'http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css');
@@ -382,6 +391,8 @@ function wp_gear_manager_admin_scripts() {
     wp_enqueue_script('my-upload');
     wp_enqueue_script('datepicker', WP_PLUGIN_URL. '/Simple-Service-Support/scripts/datepicker.js');
     wp_enqueue_script('jquery-ui-datepicker');
+    wp_register_script('bootstrap-js', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js'); 
+    wp_enqueue_style('bootstrap-js', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js' );
 }
 
 add_action('admin_print_scripts', 'wp_gear_manager_admin_scripts');
