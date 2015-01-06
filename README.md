@@ -1,4 +1,5 @@
 Simple-Service-Support
 ======================
 
-Wordpress Plugin
+Wordpress Plugin 
+(Please help in the development of plug-ins)
