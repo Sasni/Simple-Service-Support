@@ -1,3 +1,49 @@
+
+/*jQuery(document).ready(function() {
+jQuery('.upload_button').click(function() {
+    uploadID = jQuery(this).prev('input'); // grabs the correct field
+    spanID = jQuery(this).parent().find('span'); // grabs the correct span
+    formfield = jQuery('.frp_upload').attr('name');
+    tb_show('', 'media-upload.php?type=image&TB_iframe=true');
+    return false;
+});
+
+window.send_to_editor = function(html) {
+    imgurl = jQuery('img', html).attr('src'); // grabs the image URL from the IMG tag
+    jQuery('.frp_upload').val(imgurl); // wyciąga adres obrazka i wrzuca do pola tekstowego
+    uploadID.val(imgurl); // sends the image URL to the hidden input field
+    spanID.html(html); // sends the IMG tag to the preview span
+    tb_remove();
+}
+
+});
+*/
+
+
+
+/* jQuery(document).ready(function() {
+	var formfield;
+	jQuery('.upload_image_button').click(function() {
+		jQuery('html').addClass('Image');
+		formfield = jQuery(this).prev().attr('name');
+		tb_show('', 'media-upload.php?type=image&amp;TB_iframe=true');
+	return false;
+});
+
+window.original_send_to_editor = window.send_to_editor;
+window.send_to_editor = function(html){
+	if (formfield) {
+		fileurl = jQuery('img',html).attr('src');
+		jQuery('#'+formfield).val(fileurl);
+		tb_remove();
+		jQuery('html').removeClass('Image');
+	} else {
+		window.original_send_to_editor(html);
+	}
+};
+
+});*/
+
 jQuery(document).ready(function($){
   
     var custom_uploader;

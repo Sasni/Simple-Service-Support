@@ -19,7 +19,7 @@ load_plugin_textdomain('simple_service_support', false, basename( dirname( __FIL
  */
 require_once(plugin_dir_path(__FILE__) . 'install_functions.php');
 
-simple_service_support_install();    // FUNKCJA INSTALUJĄCA TABELE W BAZIE + SAMPLE DATA
+simple_service_support_install();    // FUNKCJA INSTALUJĄCA TABELE W BAZIE
 
 
 /**
@@ -343,16 +343,53 @@ $val = $_GET['namelist'];
 /**
  * admin_menu hook implementation, will add pages to list zlecenia and to add new one
  */
+
+add_action('admin_init', 'simple_service_support_admin_init');
+add_action('admin_menu', 'simple_service_support_admin_menu');  // wywołuję funkcję "pokaż menu" tylko w panelu admina.
+
+function simple_service_support_admin_init() {
+       /* Register our stylesheet. ONLY FOR PLUGIN PAGES*/
+       wp_register_style( 'bootstarp', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css');
+   }
  
 function simple_service_support_admin_menu()
 {
     $hook = add_menu_page(__('Order status', 'simple_service_support'), __('Order status', 'simple_service_support'), 'activate_plugins', 'zlecenia', 'simple_service_support_zlecenia_page_handler');
-    add_submenu_page('zlecenia', __('Order status', 'simple_service_support'), __('Order status', 'simple_service_support'), 'activate_plugins', 'zlecenia', 'simple_service_support_zlecenia_page_handler');
-    // add new will be described in next part
-    add_submenu_page('zlecenia', __('Add / Edit', 'simple_service_support'), __('Add / Edit', 'simple_service_support'), 'activate_plugins', 'zlecenia_form', 'simple_service_support_zlecenia_form_page_handler');
-    add_submenu_page('zlecenia', __('Statystyki', 'simple_service_support'), __('Statystyki', 'simple_service_support'), 'activate_plugins', 'statystyki', 'simple_service_support_zlecenia_stats');
+    $page2 = add_submenu_page('zlecenia', __('Order status', 'simple_service_support'), __('Order status', 'simple_service_support'), 'activate_plugins', 'zlecenia', 'simple_service_support_zlecenia_page_handler');
+    $page1 = add_submenu_page('zlecenia', __('Add / Edit', 'simple_service_support'), __('Add / Edit', 'simple_service_support'), 'activate_plugins', 'zlecenia_form', 'simple_service_support_zlecenia_form_page_handler');
+    		 add_submenu_page('zlecenia', __('Statystyki', 'simple_service_support'), __('Statystyki', 'simple_service_support'), 'activate_plugins', 'statystyki', 'simple_service_support_zlecenia_stats');
     add_action( "load-$hook", 'simple_service_support_add_options' );
+
+    /* Using registered $page handle to hook stylesheet loading */
+       add_action( 'admin_print_styles-' . $page1, 'simple_service_support_admin_styles' );
+       add_action( 'admin_print_styles-' . $page2, 'simple_service_support_admin_styles' );
 }
+function simple_service_support_admin_styles() {
+    wp_enqueue_style('bootstrap' , 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css');
+    wp_enqueue_style('thickbox');
+  /*wp_enqueue_style('my_css', WP_PLUGIN_URL. '/Simple-Service-Support/css/style.css');*/  //   mój własny css
+    wp_enqueue_style('jquery-ui-css', 'http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css');
+   }
+
+/*wp_enqueue_style('jquery-ui-css', 'http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css');*/
+
+function wp_gear_manager_admin_scripts() {
+    wp_enqueue_script('media-upload');
+    wp_enqueue_script('thickbox');
+    wp_enqueue_script('jquery');
+    wp_enqueue_media();
+    wp_register_script('my-upload', WP_PLUGIN_URL. '/Simple-Service-Support/scripts/m-uploader.js', array('jquery'/*,'media-upload','thickbox'*/));
+    wp_enqueue_script('my-upload');
+    wp_enqueue_script('datepicker', WP_PLUGIN_URL. '/Simple-Service-Support/scripts/datepicker.js');
+    wp_enqueue_script('jquery-ui-datepicker');
+}
+
+add_action('admin_print_scripts', 'wp_gear_manager_admin_scripts');
+add_action( 'wp_enqueue_scripts', 'add_thickbox' );   // dodaje Thickbox do pokazywania zdjęć w ładnych wyskakujących ramkach.
+
+//wp_enqueue_script('m-uplader', WP_PLUGIN_URL. '/oko/scripts/m-uploader.js');
+
+
 
 function simple_service_support_add_options() 
 {
@@ -369,9 +406,9 @@ add_screen_option( $option, $args );
 $table = new simple_service_support_List_Table();
 }
 
-add_action('admin_menu', 'simple_service_support_admin_menu');
-
 add_filter('set-screen-option', 'test_table_set_option', 10, 3);
+
+
 
 function test_table_set_option($status, $option, $value) {
   return $value;
@@ -585,34 +622,6 @@ function simple_service_support_zlecenia_form_page_handler()
 
 
 
-/*wp_enqueue_style('jquery-ui-css', 'http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css');*/
-
-function wp_gear_manager_admin_scripts() {
-    wp_enqueue_script('media-upload');
-    wp_enqueue_script('thickbox');
-    wp_enqueue_script('jquery');
-    wp_enqueue_media();
-    wp_register_script('my-upload', WP_PLUGIN_URL. '/oko/scripts/m-uploader.js', array('jquery'/*,'media-upload','thickbox'*/));
-    wp_enqueue_script('my-upload');
-    wp_enqueue_script('datepicker', WP_PLUGIN_URL. '/oko/scripts/datepicker.js');
-    wp_enqueue_script('jquery-ui-datepicker');
-}
-
-function wp_gear_manager_admin_styles() {
-    wp_enqueue_style('thickbox');
-    wp_enqueue_style('my_css', WP_PLUGIN_URL. '/oko/css/style.css');
-    wp_enqueue_style('jquery-ui-css', 'http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css');
-}
-
-add_action('admin_print_scripts', 'wp_gear_manager_admin_scripts');
-add_action('admin_print_styles', 'wp_gear_manager_admin_styles');
-
-add_action( 'wp_enqueue_scripts', 'add_thickbox' );   // dodaje Thickbox do pokazywania zdjęć w ładnych wyskakujących ramkach.
-
-
-//wp_enqueue_script('m-uplader', WP_PLUGIN_URL. '/oko/scripts/m-uploader.js');
-
-
 
 function options_status(){
 
@@ -781,22 +790,20 @@ function simple_service_support_zlecenia_form_meta_box_handler($item)
 
 
 <input type="text" id="image_1" name="image_1" value="<?php echo esc_attr($item['image_1'])?>" style="width: 60%; float:left; margin:0 5px;"/>
-<input id="_btn" class="upload_image_button" type="button" value="<?php _e('Upload Photo', 'simple_service_support')?>" style="float:left; width: 35%;" />
+<input id="_btn" class="upload_image_button btn btn-primary btn-sm" type="button" value="<?php _e('Upload Photo', 'simple_service_support')?>" style="float:left; width: 35%;" />
 <?php
 	if (!empty($item['image_1'])) {
         $image_1 = esc_attr($item['image_1']);
-        /*$wynik_1 = str_replace("-300x200.", ".", $image_1);*/
-		echo '<a href="'.$image_1.'" class="thickbox"><img src="'. $image_1 .'"></a>';
+		echo '<a href="'.$image_1.'"><img src="'. $image_1 .'" class="img-responsive"></a>';
 	}
 ?>
 
 <input type="text" id="image_2" name="image_2" value="<?php echo esc_attr($item['image_2'])?>" style="width: 60%; float:left; margin:0 5px;"/>
-<input id="_btn" class="upload_image_button" type="button" value="<?php _e('Upload Photo', 'simple_service_support')?>" style="float:left; width: 35%;" />
+<input id="_btn" class="upload_image_button btn btn-primary btn-sm" type="button" value="<?php _e('Upload Photo', 'simple_service_support')?>" style="float:left; width: 35%;" />
 <?php
 	if (!empty($item['image_2'])) {
 		$image_2 = esc_attr($item['image_2']);
-		$wynik_2 = str_replace("-300x200.", ".", $image_2);
-		echo "<a href=".$wynik_2."  ><img src=". $image_2 ."></a>";
+		echo '<a href="'.$image_2.'"><img src="'. $image_2 .'" class="img-responsive"></a>';
 
 	}
 ?>
@@ -808,24 +815,22 @@ function simple_service_support_zlecenia_form_meta_box_handler($item)
 <td>
 
 <input type="text" id="image_3" name="image_3" value="<?php echo esc_attr($item['image_3'])?>" style="width: 60%; float:left; margin:0 5px;"/>
-<input id="_btn" class="upload_image_button" type="button" value="<?php _e('Upload Photo', 'simple_service_support')?>" style="float:left; width: 35%;" />
+<input id="_btn" class="upload_image_button btn btn-primary btn-sm" type="button" value="<?php _e('Upload Photo', 'simple_service_support')?>" style="float:left; width: 35%;" />
 <?php
 	if (!empty($item['image_3'])) {
 		$image_3 = esc_attr($item['image_3']);
-		$wynik = str_replace("-300x200.", ".", $image_3);
-		echo "<a href=".$wynik." ><img src=". $image_3 ."></a>";
+		echo '<a href="'.$image_3.'" ><img src="'. $image_3 .'" class="img-responsive"></a>';
 
 	}
 ?>
 
 
 <input type="text" id="image_4" name="image_4" value="<?php echo esc_attr($item['image_4'])?>" style="width: 60%; float:left; margin:0 5px;"/>
-<input id="_btn" class="upload_image_button" type="button" value="<?php _e('Upload Photo', 'simple_service_support')?>" style="float:left; width: 35%;" />
+<input id="_btn" class="upload_image_button btn btn-primary btn-sm" type="button" value="<?php _e('Upload Photo', 'simple_service_support')?>" style="float:left; width: 35%;" />
 <?php
 	if (!empty($item['image_4'])) {
 		$image_4 = esc_attr($item['image_4']);
-		$wynik = str_replace("-300x200.", ".", $image_4);
-		echo "<a href=".$wynik." ><img src=". $image_4 ."></a>";
+		echo '<a href="'.$image_4.'" ><img src="'. $image_4 .'" class="img-responsive"></a>';
 
 	}
 ?>

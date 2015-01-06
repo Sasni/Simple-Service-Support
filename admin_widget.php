@@ -17,8 +17,8 @@ function simple_service_support_dashboard_widget_function() {
 
     echo "<ul> 
           <li><span style='float:left; margin-right: 8px;'>". $total_items_wydany    ."</span> Wydanych urządzen</li>
-          <li><span style='float:left; margin-right: 8px;'>". $total_items_przyjety  ."</span>Przyjetych do serwisu </li>
-          <li><span style='float:left; margin-right: 8px;'>". $total_items_oczekiwanie."</span> Czeka na czesci </li>
+          <li><span style='float:left; margin-right: 8px;'>". $total_items_przyjety  ."</span>Przyjętych do serwisu </li>
+          <li><span style='float:left; margin-right: 8px;'>". $total_items_oczekiwanie."</span> Czeka na części </li>
           <li><span style='float:left; margin-right: 8px;'>". $total_items_naprawiany."</span> W trakcie naprawy </li>
           </ul>
           ";
