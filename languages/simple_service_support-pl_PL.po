@@ -1,0 +1,253 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Simple Service Support v1.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2014-04-29 19:27:34+0000\n"
+"Last-Translator: tadeo <tadeksasnal@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: CSL v1.x\n"
+"X-Poedit-Language: Polish\n"
+"X-Poedit-Country: POLAND\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;\n"
+"X-Poedit-Basepath: ../\n"
+"X-Poedit-Bookmarks: \n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Textdomain-Support: yes"
+
+#. translators: plugin header field 'Name'
+#: oko.php:0
+#@ simple_service_support
+msgid "Simple Service Support"
+msgstr ""
+
+#. translators: plugin header field 'PluginURI'
+#. translators: plugin header field 'AuthorURI'
+#: oko.php:0
+#@ simple_service_support
+msgid "http://www.tech-sas.pl"
+msgstr ""
+
+#. translators: plugin header field 'Description'
+#: oko.php:0
+#@ simple_service_support
+msgid "Plugin do obsługi serwisu"
+msgstr ""
+
+#. translators: plugin header field 'Author'
+#: oko.php:0
+#@ simple_service_support
+msgid "Tadeusz Sasnal"
+msgstr ""
+
+#. translators: plugin header field 'Version'
+#: oko.php:0
+#@ simple_service_support
+msgid "1.1"
+msgstr ""
+
+#: oko.php:160
+#@ simple_service_support
+msgid "Edit"
+msgstr ""
+
+#: oko.php:161
+#@ simple_service_support
+msgid "Delete"
+msgstr ""
+
+#: oko.php:195
+#@ simple_service_support
+msgid "ID"
+msgstr ""
+
+#: oko.php:196
+#@ simple_service_support
+msgid "Przedmiot Zlecenia"
+msgstr ""
+
+#: oko.php:197
+#: oko.php:692
+#@ simple_service_support
+msgid "Status Zlecenia"
+msgstr ""
+
+#: oko.php:199
+#: oko.php:595
+#@ simple_service_support
+msgid "Name"
+msgstr ""
+
+#: oko.php:201
+#: oko.php:653
+#@ simple_service_support
+msgid "Model"
+msgstr ""
+
+#: oko.php:202
+#: oko.php:629
+#: oko.php:633
+#@ simple_service_support
+msgid "Opis Usterki"
+msgstr ""
+
+#: oko.php:203
+#: oko.php:679
+#@ simple_service_support
+msgid "Data Przyjęcia"
+msgstr ""
+
+#: oko.php:204
+#: oko.php:681
+#@ simple_service_support
+msgid "Data Wydania"
+msgstr ""
+
+#: oko.php:205
+#: oko.php:667
+#@ simple_service_support
+msgid "E-Mail"
+msgstr ""
+
+#: oko.php:349
+#: oko.php:350
+#: oko.php:409
+#@ simple_service_support
+msgid "Zlecenia"
+msgstr ""
+
+#: oko.php:352
+#: oko.php:410
+#@ simple_service_support
+msgid "Add new"
+msgstr ""
+
+#: oko.php:403
+#, php-format
+#@ simple_service_support
+msgid "Items deleted: %d"
+msgstr ""
+
+#: oko.php:491
+#@ simple_service_support
+msgid "Item was successfully saved"
+msgstr ""
+
+#: oko.php:493
+#@ simple_service_support
+msgid "There was an error while saving item"
+msgstr ""
+
+#: oko.php:498
+#@ simple_service_support
+msgid "Item was successfully updated"
+msgstr ""
+
+#: oko.php:500
+#@ simple_service_support
+msgid "There was an error while updating item"
+msgstr ""
+
+#: oko.php:515
+#@ simple_service_support
+msgid "Item not found"
+msgstr ""
+
+#: oko.php:527
+#@ simple_service_support
+msgid "back to list"
+msgstr ""
+
+#: oko.php:547
+#@ simple_service_support
+msgid "Save"
+msgstr "Zapisz"
+
+#: oko.php:599
+#@ simple_service_support
+msgid "Your name"
+msgstr ""
+
+#: oko.php:612
+#@ simple_service_support
+msgid "Przedmiot zlecenia"
+msgstr ""
+
+#: oko.php:656
+#: oko.php:660
+#@ simple_service_support
+msgid "Plomba"
+msgstr ""
+
+#: oko.php:671
+#@ simple_service_support
+msgid "Your E-Mail"
+msgstr ""
+
+#: oko.php:675
+#@ simple_service_support
+msgid "Data Przyjęcia / Wydnia"
+msgstr ""
+
+#: oko.php:711
+#: oko.php:715
+#@ simple_service_support
+msgid "Equipment"
+msgstr "Wyposażenie"
+
+#: oko.php:720
+#: oko.php:742
+#@ simple_service_support
+msgid "Foto"
+msgstr ""
+
+#: oko.php:725
+#: oko.php:733
+#: oko.php:747
+#: oko.php:756
+#@ simple_service_support
+msgid "Upload Photo"
+msgstr "Prześlij zdjęcie"
+
+#: oko.php:783
+#@ simple_service_support
+msgid "Name is required"
+msgstr ""
+
+#: oko.php:784
+#@ simple_service_support
+msgid "E-Mail is in wrong format"
+msgstr ""
+
+#: oko.php:787
+#@ default
+msgid "Plomba must be number"
+msgstr ""
+
+#: oko.php:198
+#: oko.php:602
+#: oko.php:606
+#@ simple_service_support
+msgid "Serial Number"
+msgstr "Numer seryjny"
+
+#: oko.php:200
+#@ simple_service_support
+msgid "Brand"
+msgstr ""
+
+#: oko.php:526
+#@ simple_service_support
+msgid "Order Details"
+msgstr "Szczegóły zlecenia"
+
+#: oko.php:639
+#@ simple_service_support
+msgid "Brand / Model"
+msgstr ""
+
