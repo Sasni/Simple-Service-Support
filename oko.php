@@ -62,7 +62,7 @@ class simple_service_support_List_Table extends WP_List_Table
 	function extra_tablenav( $which ) {
 	if ( $which == "top" ){
 		options_status();
-		?><input type="submit" name="show" id="namelist" value="Submit" />
+		?><input type="submit" name="status_zlecenia" id="submit" value="Submit" />
 		<?php
 	}
 	if ( $which == "bottom" ){
@@ -287,7 +287,7 @@ class simple_service_support_List_Table extends WP_List_Table
         $this->process_bulk_action();
 
         // will be used in pagination settings
-        
+        //$total_items = $wpdb->get_var("SELECT COUNT(id) FROM $table_name WHERE name LIKE '%%$search%%'");
 
         // prepare query params, as usual current page, order by and order direction
         $paged = isset($_REQUEST['paged']) ? max(0, intval($_REQUEST['paged']) - 1) : 0;
@@ -300,22 +300,21 @@ class simple_service_support_List_Table extends WP_List_Table
        
         	// Trim Search Term
         	$search = $_POST['s'];   // PRZYPISZ WARTOŚC POST DO ZMIENNEJ
-$val = $_GET['namelist'];
+			//$val 	= $_GET['namelist'];
         	$search = trim($search);  // WYWAL SPACJE
-       
 
         	// WYPISZ ZNALEZIONE WYNIIKI
-        	$this->items = $wpdb->get_results($wpdb->prepare("SELECT * FROM $table_name WHERE name LIKE '%%$search%%' OR numer_seryjny LIKE '%%$search%%' AND status_zlecenia LIKE '%%$val%%' ", $per_page, $paged), ARRAY_A);
-        	$total_items = $wpdb->get_var("SELECT COUNT(id) FROM $table_name WHERE name LIKE '%%$search%%'");
+        	$this->items = $wpdb->get_results($wpdb->prepare("SELECT * FROM $table_name WHERE name LIKE '%%$search%%' OR numer_seryjny LIKE '%%$search%%' LIMIT %d OFFSET %d/*AND status_zlecenia LIKE '%%$val%%'*/ ", $per_page, $paged), ARRAY_A);
+        	$total_items = $wpdb->get_var("SELECT COUNT(id) FROM $table_name WHERE name LIKE '%%$search%%' OR numer_seryjny LIKE '%%$search%%'");
  
-		}else if (isset($_GET['namelist']) && !(isset($_POST['s']) && ($_POST['s']) != NULL)) {
+		}/*else if (isset($_GET['namelist']) && !(isset($_POST['s']) && ($_POST['s']) != NULL)) {
+			
 			$val = $_GET['namelist'];
-
         	$this->items = $wpdb->get_results($wpdb->prepare("SELECT * FROM $table_name WHERE status_zlecenia LIKE '%%$val%%'", $per_page, $paged), ARRAY_A);
         	$total_items = $wpdb->get_var("SELECT COUNT(id) FROM $table_name WHERE status_zlecenia LIKE '%%$val%%'");
 
 			
-		}else{
+		}*/else{
 			 // WYPISZ WSZYSTKIE DOSTĘPNE WPISZY Z BAZY
         	$this->items = $wpdb->get_results($wpdb->prepare("SELECT * FROM $table_name ORDER BY $orderby $order LIMIT %d OFFSET %d", $per_page, $paged), ARRAY_A);
         	$total_items = $wpdb->get_var("SELECT COUNT(id) FROM $table_name");
@@ -327,6 +326,13 @@ $val = $_GET['namelist'];
             'per_page' => $per_page, // per page constant defined at top of method
             'total_pages' => ceil($total_items / $per_page) // calculate pages count
         ));
+
+        $last_post = $current_page * $per_page;
+        $first_post = $last_post - $per_page + 1;
+        $last_post > $total_items AND $last_post = $total_items;
+
+        $range = array_flip(range($first_post -1, $last_post -1, 1));
+        $pos
     }
 }
 
@@ -625,10 +631,10 @@ add_action('admin_print_styles', 'wp_gear_manager_admin_styles');
 function options_status(){
             global $wpdb;
     		$table_name = $wpdb->prefix . 'zlecenia_status'; // tables prefix
-            $options_status = $wpdb->get_row($wpdb->prepare("SELECT 'status_zlecenia' FROM $table_name" ));
+            $options_status = $wpdb->get_col($wpdb->prepare("SELECT status_zlecenia FROM $table_name" ));
             ?>
 
- 			<select name="status_zlecenia">  <!-- TU COŚ NIE ŚMIGA DO POPRAWY -->
+ 			<select name="status_zlecenia"> 
             	<?php foreach ($options_status as $option_status): ?>
                 	<option value="<?php echo $option_status; ?>"<?php if (esc_attr($item['status_zlecenia']) == $option_status): ?> selected="selected"<?php endif; ?>>
                     	<?php echo ($option_status); ?>
