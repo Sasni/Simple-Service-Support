@@ -273,12 +273,14 @@ class simple_service_support_List_Table extends WP_List_Table
         global $wpdb;
         $table_name = $wpdb->prefix . 'cte'; // tables prefix
 
-        $per_page = $this->get_items_per_page('books_per_page'/*,5*/) ; // constant, how much records will be shown per page
+        $per_page 	= $this->get_items_per_page('books_per_page'/*,5*/) ; // constant, how much records will be shown per page
 
-        $columns = $this->get_columns();
-        $hidden = array();
-        $sortable = $this->get_sortable_columns();
+        $columns 	= $this->get_columns();
+        $hidden 	= array();
+        $sortable	= $this->get_sortable_columns();
         $current_page = $this->get_pagenum();
+
+        
 
         // here we configure table headers, defined in our methods
         $this->_column_headers = $this->get_column_info(); /*array($columns, $hidden, $sortable);*/
@@ -290,7 +292,7 @@ class simple_service_support_List_Table extends WP_List_Table
         //$total_items = $wpdb->get_var("SELECT COUNT(id) FROM $table_name WHERE name LIKE '%%$search%%'");
 
         // prepare query params, as usual current page, order by and order direction
-        $paged = isset($_REQUEST['paged']) ? max(0, intval($_REQUEST['paged']) - 1) : 0;
+        $paged = isset($_REQUEST['paged']) ? max(0, intval($_REQUEST['paged']- 1) * $per_page) : 0; // PAGINACJA
         $orderby = (isset($_REQUEST['orderby']) && in_array($_REQUEST['orderby'], array_keys($this->get_sortable_columns()))) ? $_REQUEST['orderby'] : 'id';
         $order = (isset($_REQUEST['order']) && in_array($_REQUEST['order'], array('asc', 'desc'))) ? $_REQUEST['order'] : 'desc';
 
@@ -326,13 +328,6 @@ class simple_service_support_List_Table extends WP_List_Table
             'per_page' => $per_page, // per page constant defined at top of method
             'total_pages' => ceil($total_items / $per_page) // calculate pages count
         ));
-
-        $last_post = $current_page * $per_page;
-        $first_post = $last_post - $per_page + 1;
-        $last_post > $total_items AND $last_post = $total_items;
-
-        $range = array_flip(range($first_post -1, $last_post -1, 1));
-        $pos
     }
 }
 
