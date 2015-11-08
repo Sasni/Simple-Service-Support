@@ -11,3 +11,9 @@ tbody[data-wp-lists="list:person"] tr:hover {
 #id {
 	width: 2.2em;
 }
+
+a.fancybox > img {
+    width: 60%;
+}
+
+
