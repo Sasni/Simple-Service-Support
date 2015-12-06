@@ -41,6 +41,7 @@ if (!class_exists('WP_List_Table')) {
  */
 
 
+
 class simple_service_support_List_Table extends WP_List_Table
 {
     /**
@@ -59,10 +60,24 @@ class simple_service_support_List_Table extends WP_List_Table
     }
 
 
+
 	function extra_tablenav( $which ) {
 	if ( $which == "top" ){
-		options_status();
-		?><input type="submit" name="status_zlecenia" id="submit" value="Submit" />
+		 global $wpdb;
+    		$table_name = $wpdb->prefix . 'zlecenia_status'; // tables prefix
+            $options_status = $wpdb->get_col($wpdb->prepare("SELECT status_zlecenia FROM $table_name", ARRAY_A ));
+            ?>
+
+ 			<select name="status_zlecenia"> 
+ 			<option value="Sortuj wg statusu"></option>
+            	<?php foreach ($options_status as $option_status): ?>
+                	<option value="<?php echo $option_status; ?>"<?php if (esc_attr($item['status_zlecenia']) == $option_status): ?> selected="selected"<?php endif; ?>>
+                    	<?php echo ($option_status); ?>
+                	</option>
+                <?php endforeach; ?>
+            </select>
+         
+			<input type="submit" name="status_zlecenia" id="submit" value="Submit" />
 		<?php
 	}
 	if ( $which == "bottom" ){
@@ -344,19 +359,42 @@ class simple_service_support_List_Table extends WP_List_Table
 /**
  * admin_menu hook implementation, will add pages to list zlecenia and to add new one
  */
- 
-function simple_service_support_admin_menu()
-{
+add_action('admin_menu', 'simple_service_support_admin_menu');
+
+function simple_service_support_admin_menu(){
+
     $hook = add_menu_page(__('Order status', 'simple_service_support'), __('Order status', 'simple_service_support'), 'activate_plugins', 'zlecenia', 'simple_service_support_zlecenia_page_handler');
     add_submenu_page('zlecenia', __('Order status', 'simple_service_support'), __('Order status', 'simple_service_support'), 'activate_plugins', 'zlecenia', 'simple_service_support_zlecenia_page_handler');
     // add new will be described in next part
-    add_submenu_page('zlecenia', __('Add / Edit', 'simple_service_support'), __('Add / Edit', 'simple_service_support'), 'activate_plugins', 'zlecenia_form', 'simple_service_support_zlecenia_form_page_handler');
-    add_submenu_page('zlecenia', __('Statystyki', 'simple_service_support'), __('Statystyki', 'simple_service_support'), 'activate_plugins', 'statystyki', 'simple_service_support_zlecenia_stats');
+    add_submenu_page( 
+    	'zlecenia', 		 
+    	 __('Add / Edit', 'simple_service_support'), 	
+    	 __('Add / Edit', 'simple_service_support'), 
+    	 'activate_plugins', 
+    	 'zlecenia_form', 
+    	 'simple_service_support_zlecenia_form_page_handler'
+    );
+    add_submenu_page( 
+    	'zlecenia', 		  
+    	__('Statystyki', 'simple_service_support'), 	
+    	__('Statystyki', 'simple_service_support'),
+    	'manage_options', 
+    	'stats', 
+    	'simple_service_support_zlecenia_stats'
+    );
+    add_options_page( 
+    	'My Plugin Options', 
+    	'My Plugin', 								
+    	'manage_options', 			
+    	'my-unique-identifier', 
+    	'my_plugin_options' 
+    );
+
     add_action( "load-$hook", 'simple_service_support_add_options' );
 }
 
-function simple_service_support_add_options() 
-{
+function simple_service_support_add_options(){
+
     global $table;
     $option = 'per_page';
 
@@ -366,11 +404,10 @@ function simple_service_support_add_options()
         'option' => 'books_per_page'
     );
 
-add_screen_option( $option, $args );
-$table = new simple_service_support_List_Table();
+	add_screen_option( $option, $args );
+	$table = new simple_service_support_List_Table();
 }
 
-add_action('admin_menu', 'simple_service_support_admin_menu');
 
 add_filter('set-screen-option', 'test_table_set_option', 10, 3);
 
@@ -388,6 +425,84 @@ function test_table_set_option($status, $option, $value) {
  *
  * Look into /wp-admin/includes/class-wp-*-list-table.php for examples
  */
+
+function simple_service_support_zlecenia_stats ()  // Pokazywanie strony ze statystykami
+{
+
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'cte'; // tables prefix
+
+    $all_brands = $wpdb->get_results("SELECT brand, COUNT(brand) AS liczba FROM $table_name GROUP BY brand"); // Pytanie wypisujące markę oraz zaiczające je.
+
+	echo '<div class="wrap">';?>
+	<div style="float:left">
+		<!-- <table class="zlecenia striped widefat">
+			<thead>
+				<tr>
+					<th>Marka</th>	<th>Ilość</th>
+				</tr>
+			</thead>
+			<tbody> -->
+				<?php 
+				foreach ($all_brands as $value): 
+				//echo '<tr><td>'.$value->brand.'</td><td>'.$value->liczba.'</td></tr>';
+				$do_wykresu[] = "['".$value->brand."', ".$value->liczba."]";
+				endforeach;  ?>
+			<!-- </tbody>
+		</table> -->
+	</div>
+	<div style="float:left;">
+		<?php $data_for_chart = implode(",", $do_wykresu); ?>  <!-- oddziela wartości tablicy przecinkami - dane z pętli foreach -->
+
+		<!-- WYKRES GOOGLE -->
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	    <script type="text/javascript">
+
+	      // Load the Visualization API and the piechart package.
+	      google.load('visualization', '1.1', {'packages':['table']});
+
+	      // Set a callback to run when the Google Visualization API is loaded.
+	      google.setOnLoadCallback(drawTable);
+
+	      // Callback that creates and populates a data table,
+	      // instantiates the pie chart, passes in the data and
+	      // draws it.
+	      function drawTable() {
+
+	        // Create the data table.
+	        var data = new google.visualization.DataTable();
+	        data.addColumn('string', 'Marka');
+	        data.addColumn('number', 'Ilość');
+	        data.addRows([
+	          <?php echo $data_for_chart; ?>
+	        ]);
+
+	        // Set chart options
+	        var options = {'title':'Laptopy',
+	                       'width':400
+	                       };
+
+	        // Instantiate and draw our chart, passing in some options.
+	        var table = new google.visualization.Table(document.getElementById('table_div'));
+	        table.draw(data, options);
+	      }
+	    </script>
+		<div id="table_div"></div>
+		<!-- KONIEC WYKRESU GOOGLE -->
+
+	</div>
+	<div style="clear:both;"></div>
+
+<?php
+
+	echo '<p>Here is where the form would go if I actually had options.</p>';
+	echo '</div>';
+            
+
+
+}
+
+
 function simple_service_support_zlecenia_page_handler()
 {
     global $wpdb;
@@ -448,16 +563,6 @@ function simple_service_support_zlecenia_page_handler()
  * Form page handler checks is there some data posted and tries to save it
  * Also it renders basic wrapper in which we are callin meta box render
  */
-
-function simple_service_support_zlecenia_stats ()
-{
-
-    global $wpdb;
-    $table_name = $wpdb->prefix . 'cte'; // tables prefix
-}
-
-
-
 
 
 function simple_service_support_zlecenia_form_page_handler()
@@ -621,24 +726,6 @@ add_action('admin_print_styles', 'wp_gear_manager_admin_styles');
 
 //wp_enqueue_script('m-uplader', WP_PLUGIN_URL. '/oko/scripts/m-uploader.js');
 
-
-
-function options_status(){
-            global $wpdb;
-    		$table_name = $wpdb->prefix . 'zlecenia_status'; // tables prefix
-            $options_status = $wpdb->get_col($wpdb->prepare("SELECT status_zlecenia FROM $table_name" ));
-            ?>
-
- 			<select name="status_zlecenia"> 
-            	<?php foreach ($options_status as $option_status): ?>
-                	<option value="<?php echo $option_status; ?>"<?php if (esc_attr($item['status_zlecenia']) == $option_status): ?> selected="selected"<?php endif; ?>>
-                    	<?php echo ($option_status); ?>
-                	</option>
-                <?php endforeach; ?>
-            </select>
-         
-<?php
-}
 
 
 function simple_service_support_zlecenia_form_meta_box_handler($item)
