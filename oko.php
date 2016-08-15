@@ -6,7 +6,7 @@ Plugin URI: http://www.tech-sas.pl
 Author URI: http://www.tech-sas.pl
 Author: Tadeusz Sasnal
 License: Public Domain
-Version: 1.1
+Version: 0.3
 Text Domain: simple_service_support
 Domain Path: /languages
 */
@@ -101,6 +101,7 @@ class simple_service_support_List_Table extends WP_List_Table
      case 'przedmiot_zlecenia':
      case 'status_zlecenia':
      case 'name':
+     case 'phone':
      case 'numer_seryjny':
      case 'brand':
      case 'model':
@@ -211,6 +212,7 @@ class simple_service_support_List_Table extends WP_List_Table
             'status_zlecenia' => __('Status Order', 'simple_service_support'),
             'numer_seryjny' => __('Serial Number', 'simple_service_support'),
             'name' => __('Name', 'simple_service_support'),
+            'phone' => __('Phone', 'simple_service_support'),
             'brand' => __('Brand', 'simple_service_support'),
             'model' => __('Model', 'simple_service_support'),
             'opis_usterki' => __('Fault Description', 'simple_service_support'),
@@ -238,7 +240,7 @@ class simple_service_support_List_Table extends WP_List_Table
             'email' => array('email', false),
             'delivery_date' => array('delivery_date', false),
             'data_wydania' => array('data_wydania', false),
-            'status_zlecenia' => array('status_zlecenia', false),
+            //'status_zlecenia' => array('status_zlecenia', false),
         ); 
         return $sortable_columns;
     }
@@ -321,8 +323,13 @@ class simple_service_support_List_Table extends WP_List_Table
         	$search = trim($search);  // WYWAL SPACJE
 
         	// WYPISZ ZNALEZIONE WYNIIKI
-        	$this->items = $wpdb->get_results($wpdb->prepare("SELECT * FROM $table_name WHERE name LIKE '%%$search%%' OR numer_seryjny LIKE '%%$search%%' LIMIT %d OFFSET %d/*AND status_zlecenia LIKE '%%$val%%'*/ ", $per_page, $paged), ARRAY_A);
-        	$total_items = $wpdb->get_var("SELECT COUNT(id) FROM $table_name WHERE name LIKE '%%$search%%' OR numer_seryjny LIKE '%%$search%%'");
+        	$this->items = $wpdb->get_results($wpdb->prepare("SELECT * FROM $table_name WHERE 
+        																						name LIKE '%%$search%%' 
+        																			OR numer_seryjny LIKE '%%$search%%' 
+        																			OR phone	     LIKE '%%$search%%'
+        																			LIMIT %d OFFSET %d/*AND status_zlecenia LIKE '%%$val%%'*/ ", $per_page, $paged), ARRAY_A);
+
+        	$total_items = $wpdb->get_var("SELECT COUNT(id) FROM $table_name WHERE name LIKE '%%$search%%' OR numer_seryjny LIKE '%%$search%%' OR phone LIKE '%%$search%%'");
  
 		}/*else if (isset($_GET['namelist']) && !(isset($_POST['s']) && ($_POST['s']) != NULL)) {
 			
@@ -510,6 +517,7 @@ function simple_service_support_zlecenia_form_page_handler()
         'przedmiot_zlecenia' => '',
         'status_zlecenia' => '',
         'name' => '',
+        'phone' => '',
         'brand' => '',
         'wyposazenie' => '',
         'numer_seryjny' => '',
@@ -675,11 +683,11 @@ function simple_service_support_zlecenia_form_meta_box_handler($item)
                    size="50" class="code" placeholder="<?php _e('Your name', 'simple_service_support')?>" required>
         </td>
         <th valign="top" scope="row" style="width: 15%;">
-            <label for="numer_seryjny"><?php _e('Serial Number', 'simple_service_support')?></label>
+            <label for="phone"><?php _e('Phone', 'simple_service_support')?></label>
         </th>
         <td style="width: 35%;">
-            <input id="numer_seryjny" name="numer_seryjny" type="text"  value="<?php echo esc_attr($item['numer_seryjny'])?>"
-                   size="50" class="code" placeholder="<?php _e('Serial Number', 'simple_service_support')?>" >
+            <input id="phone" name="phone" type="tel" title="Podaj cyfry bez kresek i spacji" pattern="^\+?\d{9,13}$" value="<?php echo esc_attr($item['phone'])?>"
+                   size="10" class="code" placeholder="<?php _e('Phone', 'simple_service_support')?>" >
         </td>
     </tr>
 
@@ -732,7 +740,7 @@ function simple_service_support_zlecenia_form_meta_box_handler($item)
         </th>
         <td>
             <?php
-            	$options_brand = array("", "Acer", "Asus", "Dell", "Fujitsu Siemens", "Gateway", "HP", "Lenovo", "MSI", "Sony", "Samsung", "Toshiba");
+            	$options_brand = array("", "Acer", "Asus", "Dell", "Fujitsu Siemens", "Gateway", "Gericom", "HP", "Lenovo", "Medion", "MSI", "Packard Bell","Sony", "Samsung", "Toshiba");
             ?>
  
             <select name="brand" style="width: 47%">
@@ -755,23 +763,33 @@ function simple_service_support_zlecenia_form_meta_box_handler($item)
     </tr>
 
     <tr class="form-field">
-        <th valign="top" scope="row">
-            <label for="email"><?php _e('E-Mail', 'simple_service_support')?></label>
-        </th>
-        <td>
-            <input id="email" name="email" type="email" value="<?php echo esc_attr($item['email'])?>"
-                   size="50" class="code" placeholder="<?php _e('Your E-Mail', 'simple_service_support')?>" >
-        </td>
+	    
+	     	<th valign="top" scope="row" >
+	            <label for="numer_seryjny"><?php _e('Serial Number', 'simple_service_support')?></label>
+	        </th>
+	        <td >
 
-        <th valign="top" scope="row">
-            <label for="delivery_date"><?php _e('Delivery Date / Wydnia', 'simple_service_support')?></label>
-        </th>
-        <td>
-            <input type="text" id="delivery_date" name="delivery_date" style="width: 47%" value="<?php echo esc_attr($item['delivery_date'])?>"
-                    size="50" class="code" placeholder="<?php _e('Delivery Date', 'simple_service_support')?>">
-            <input type="text" id="data_wydania" name="data_wydania" style="width: 47%" value="<?php echo esc_attr($item['data_wydania'])?>"
-                    size="50" class="code" placeholder="<?php _e('Data Wydania', 'simple_service_support')?>">
-        </td>
+	          <input id="numer_seryjny" name="numer_seryjny" type="text" style="width: 47%" value="<?php echo esc_attr($item['numer_seryjny'])?>"
+	                   size="50" class="code" placeholder="<?php _e('Serial Number', 'simple_service_support')?>" >
+	          <!-- <label for="email"><?php _e('E-Mail', 'simple_service_support')?></label> -->
+	          <input id="email" name="email" type="email" style="width: 47%" value="<?php echo esc_attr($item['email'])?>"
+	                   size="50" class="code" placeholder="<?php _e('Your E-Mail', 'simple_service_support')?>" >
+	           
+	        </td>
+	      
+
+	        <th valign="top" scope="row">
+	        	<label for="delivery_date"><?php _e('Delivery Date / Wydnia', 'simple_service_support')?></label>
+	        </th>
+	        <td>
+	        	<input type="text" id="delivery_date" name="delivery_date" style="width: 47%" value="<?php echo esc_attr($item['delivery_date'])?>"
+	                    size="50" class="code" placeholder="<?php _e('Delivery Date', 'simple_service_support')?>">
+	            <input type="text" id="data_wydania" name="data_wydania" style="width: 47%" value="<?php echo esc_attr($item['data_wydania'])?>"
+	                    size="50" class="code" placeholder="<?php _e('Data Wydania', 'simple_service_support')?>">
+	            
+	        </td>
+
+        
 
     </tr>
     <tr class="form-field">
@@ -783,7 +801,7 @@ function simple_service_support_zlecenia_form_meta_box_handler($item)
 
             global $wpdb;
     		$table_name = $wpdb->prefix . 'zlecenia_status'; // tables prefix
-            $options_status = $wpdb->get_col($wpdb->prepare("SELECT status_zlecenia FROM $table_name"));
+            $options_status = $wpdb->get_col(("SELECT status_zlecenia FROM $table_name"));
 
             ?>
             <select name="status_zlecenia">
