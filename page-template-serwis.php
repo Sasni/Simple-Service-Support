@@ -7,10 +7,10 @@
 
 try {
   $config = array(
-    'host' => '172.16.0.3',  // propably localhost
-    'user' => 'tadeksasnal_firm', // db user
-    'pass' => '5AKht90fl2kg', // db pass
-    'db'   => 'tadeksasnal_firm' // db name
+    'host' => 'xxx',  // propably localhost
+    'user' => 'xxx', // db user
+    'pass' => 'xxx', // db pass
+    'db'   => 'xxx' // db name
     );
 $pdo = new PDO("mysql:host={$config['host']}; dbname={$config['db']};", $config['user'], $config['pass'] );
 $pdo -> query ('SET NAMES utf8');
