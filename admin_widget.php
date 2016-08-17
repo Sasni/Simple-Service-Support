@@ -37,7 +37,7 @@ function simple_service_support_dashboard_widget_function() {
               foreach ($sql as $option_przedmiot_zlecenia): 
                 echo $option_przedmiot_zlecenia . "  <br>"; 
               endforeach; 
-              echo "--- <br><strong><a href='http://tech-sas.pl/wp-admin/admin.php?page=zlecenia'>". $sql3."</a></strong>" ;
+              echo "--- <br><strong><a href='/wp-admin/admin.php?page=zlecenia'>". $sql3."</a></strong>" ;
           ?>
             
           </div>
@@ -46,7 +46,7 @@ function simple_service_support_dashboard_widget_function() {
               foreach ($sql2 as $option_przedmiot_zlecenia): 
                 echo " - " . $option_przedmiot_zlecenia . "<br>"; 
               endforeach;  ?>
-              <br><a href='http://tech-sas.pl/wp-admin/admin.php?page=zlecenia'><strong> - Suma</a></strong>
+              <br><a href='/wp-admin/admin.php?page=zlecenia'><strong> - Suma</a></strong>
          
 
           </div>
