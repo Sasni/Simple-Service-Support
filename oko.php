@@ -20,6 +20,7 @@ load_plugin_textdomain('simple_service_support', false, basename( dirname( __FIL
 require_once(ABSPATH. 'wp-content/plugins/oko/install_functions.php');
 
 simple_service_support_install();    // FUNKCJA INSTALUJĄCA TABELE W BAZIE + SAMPLE DATA
+/* END PART 1 */
 
 
 /**
@@ -61,7 +62,7 @@ class simple_service_support_List_Table extends WP_List_Table
 
 
 
-	function extra_tablenav( $which ) {
+	function extra_tablenav( $which ){
 	if ( $which == "top" ){
 		 global $wpdb;
     		$table_name = $wpdb->prefix . 'zlecenia_status'; // tables prefix
@@ -93,25 +94,25 @@ class simple_service_support_List_Table extends WP_List_Table
      * @param $column_name - string (key)
      * @return HTML
      */
-    function column_default($item, $column_name)
-    {
-        switch( $column_name ) {
-     case 'id':
-     case 'opis_usterki':
-     case 'przedmiot_zlecenia':
-     case 'status_zlecenia':
-     case 'name':
-     case 'phone':
-     case 'numer_seryjny':
-     case 'brand':
-     case 'model':
-     case 'email':
-     case 'delivery_date':
-     case 'data_wydania':
-     case 'options':
-        return $item[ $column_name ];
-    default:
-        return print_r( $item, true ) ;
+function column_default($item, $column_name)
+{
+    switch( $column_name ) {
+		case 'id':
+		case 'opis_usterki':
+		case 'przedmiot_zlecenia':
+		case 'status_zlecenia':
+		case 'name':
+		case 'phone':
+		case 'numer_seryjny':
+		case 'brand':
+		case 'model':
+		case 'email':
+		case 'delivery_date':
+		case 'data_wydania':
+		case 'options':
+    return $item[ $column_name ];
+    	default:
+    return print_r( $item, true ) ;
     }
 }
 
@@ -124,37 +125,36 @@ class simple_service_support_List_Table extends WP_List_Table
      * @return HTML
      */
 
-    function column_options($item){
-                $actions = array(
-            'edit' => sprintf('<a href="?page=zlecenia_form&id=%s">%s</a>', $item['id'], __('Edit', 'simple_service_support')),
-            'delete' => sprintf('<a href="?page=%s&action=delete&id=%s">%s</a>', $_REQUEST['page'], $item['id'], __('Delete', 'simple_service_support')),
-        );
-                        return sprintf('%s %s',
-            '<a href="?page=zlecenia_form&id='.$item['id'].'"></a>',  // pokazuje name po kliknięciu możliwość edycji
-            $this->row_actions($actions)  // po najechaniu dodaje 2 opcje ze zmienej $actions : edytuj albo usuń.
-        );
-    }
+function column_options($item)
+{
+    $actions = array(
+        'edit' => sprintf('<a href="?page=zlecenia_form&id=%s">%s</a>', $item['id'], __('Edit', 'simple_service_support')),
+        'delete' => sprintf('<a href="?page=%s&action=delete&id=%s">%s</a>', $_REQUEST['page'], $item['id'], __('Delete', 'simple_service_support')),
+    );
+    return sprintf('%s %s',
+        '<a href="?page=zlecenia_form&id='.$item['id'].'"></a>',  // pokazuje name po kliknięciu możliwość edycji
+        $this->row_actions($actions)  // po najechaniu dodaje 2 opcje ze zmienej $actions : edytuj albo usuń.
+    );
+}
     
-    function column_status_zlecenia($item)
-    {
-        $status_zlecenia = $item['status_zlecenia'] ;
-        switch( $status_zlecenia ) {
-            case 'Przyjęty do serwisu':
-        return '<div style="background-color:#5DCFC3; padding:5px; border-radius:2px;">'.$status_zlecenia.'</div>';
-            case 'Oczekiwanie na części':
-        return '<span style="background-color:#E567B1; padding:5px; border-radius:2px;">'.$status_zlecenia.'</span>';
-            case 'Wydany':
-        return '<div style="background-color:#CBF76F; padding:5px; border-radius:2px;">'.$status_zlecenia.'</div>';
-            case 'W trakcie naprawy':
-        return '<span style="background-color:#FFAE73; padding:5px; border-radius:2px;">'.$status_zlecenia.'</span>';
-            default:
-        return $status_zlecenia ;
+function column_status_zlecenia($item)
+{
+    $status_zlecenia = $item['status_zlecenia'] ;
+    switch( $status_zlecenia ) {
+        case 'Przyjęty do serwisu':
+    return '<div style="background-color:#5DCFC3; padding:5px; border-radius:2px;">'.$status_zlecenia.'</div>';
+        case 'Oczekiwanie na części':
+    return '<span style="background-color:#E567B1; padding:5px; border-radius:2px;">'.$status_zlecenia.'</span>';
+        case 'Wydany':
+    return '<div style="background-color:#CBF76F; padding:5px; border-radius:2px;">'.$status_zlecenia.'</div>';
+        case 'W trakcie naprawy':
+    return '<span style="background-color:#FFAE73; padding:5px; border-radius:2px;">'.$status_zlecenia.'</span>';
+        default:
+    return $status_zlecenia ;
     }
-
-
 
         //return '<em>' . $item['status_zlecenia'] . '</em>';
-    }
+}
 	
 
     /**
@@ -164,23 +164,24 @@ class simple_service_support_List_Table extends WP_List_Table
      * @param $item - row (key, value array)
      * @return HTML
      */
-    function column_name($item)
-    {
-        // links going to /admin.php?page=[your_plugin_page][&other_params]
-        // notice how we used $_REQUEST['page'], so action will be done on curren page
-        // also notice how we use $this->_args['singular'] so in this example it will
-        // be something like &person=2
+
+function column_name($item)
+{
+    // links going to /admin.php?page=[your_plugin_page][&other_params]
+    // notice how we used $_REQUEST['page'], so action will be done on curren page
+    // also notice how we use $this->_args['singular'] so in this example it will
+    // be something like &person=2
 
        /* $actions = array(
             'edit' => sprintf('<a href="?page=zlecenia_form&id=%s">%s</a>', $item['id'], __('Edit', 'simple_service_support')),
             'delete' => sprintf('<a href="?page=%s&action=delete&id=%s">%s</a>', $_REQUEST['page'], $item['id'], __('Delete', 'simple_service_support')),
         );
        */
-        return sprintf(//'%s %s',
-            '<a href="?page=zlecenia_form&id='.$item['id'].'">'.$item['name'].'</a>'  // pokazuje name po kliknięciu możliwość edycji
+    return sprintf(//'%s %s',
+        '<a href="?page=zlecenia_form&id='.$item['id'].'">'.$item['name'].'</a>'  // pokazuje name po kliknięciu możliwość edycji
             //$this->row_actions($actions)  // po najechaniu dodaje 2 opcje ze zmienej $actions : edytuj albo usuń.
-        );
-    }
+    );
+}
 
     /**
      * [REQUIRED] this is how checkbox column renders
@@ -188,13 +189,14 @@ class simple_service_support_List_Table extends WP_List_Table
      * @param $item - row (key, value array)
      * @return HTML
      */
-    function column_cb($item)
-    {
-        return sprintf(
-            '<input type="checkbox" name="id[]" value="%s" />',
+
+function column_cb($item)
+{
+    return sprintf(
+        '<input type="checkbox" name="id[]" value="%s" />',
             $item['id']
-        );
-    }
+    );
+}
 
     /**
      * [REQUIRED] This method return columns to display in table
@@ -389,13 +391,16 @@ function simple_service_support_admin_menu(){
     	'stats', 
     	'simple_service_support_zlecenia_stats'
     );
-    add_options_page( 
-    	'My Plugin Options', 
-    	'My Plugin', 								
-    	'manage_options', 			
-    	'my-unique-identifier', 
-    	'my_plugin_options' 
+
+    add_submenu_page( 
+    	'zlecenia', 		  
+    	__('Slowniki', 'simple_service_support'), 	
+    	__('Slowniki', 'simple_service_support'),
+    	'manage_options', 
+    	'slowniki', 
+    	'simple_service_support_zlecenia_slowniki'
     );
+    
 
     add_action( "load-$hook", 'simple_service_support_add_options' );
 }
@@ -439,6 +444,12 @@ function test_table_set_option($status, $option, $value) {
     //simple_service_support_zlecenia_stats ();  // jest tam taka funkcja
 
 /* KONIEC STATYSTYKI */
+
+/* SŁOWNIKI*/
+	require_once(ABSPATH. 'wp-content/plugins/oko/slowniki.php');   // Pokazywanie strony ze statystykami -> w osobnym pliku slowniki.php
+	//simple_service_support_zlecenia_slowniki ();  // jest tam taka funkcja
+
+/* KONIEC SŁOWNIKI*/
 
 function simple_service_support_zlecenia_page_handler()
 {
@@ -651,7 +662,7 @@ function wp_gear_manager_admin_styles() {
     //wp_enqueue_style('thickbox');
     wp_enqueue_style('my_css', WP_PLUGIN_URL. '/oko/css/style.css');
     wp_enqueue_style('jquery-ui-css', 'http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css');
-
+    //wp_enqueue_style('semantic', WP_PLUGIN_URL. '/oko/css/semantic.min.css');
     wp_enqueue_style( 'lightbox-style', WP_PLUGIN_URL. '/oko/css/jquery.fancybox.css' );
 
    
@@ -697,7 +708,7 @@ function simple_service_support_zlecenia_form_meta_box_handler($item)
         </th>
         <td>
             <?php
-            	$options_przedmiot_zlecenia = array("", "Laptop", "Komputer PC", "Tablet", "Monitor");
+            	$options_przedmiot_zlecenia = array("", "Laptop", "Komputer PC", "Tablet", "Monitor", "Telefon", "Telewizor");
             ?>
  
             <select name="przedmiot_zlecenia" >
@@ -740,7 +751,7 @@ function simple_service_support_zlecenia_form_meta_box_handler($item)
         </th>
         <td>
             <?php
-            	$options_brand = array("", "Acer", "Asus", "Dell", "Fujitsu Siemens", "Gateway", "Gericom", "HP", "Lenovo", "Medion", "MSI", "Packard Bell","Sony", "Samsung", "Toshiba");
+            	$options_brand = array("", "Acer", "Asus", "Dell", "Fujitsu Siemens", "Gateway", "Gericom", "HP", "Lenovo", "LG", "Medion", "MSI", "Packard Bell","Sony", "Samsung", "Toshiba");
             ?>
  
             <select name="brand" style="width: 47%">
